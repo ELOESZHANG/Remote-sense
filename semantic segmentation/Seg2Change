@@ -1,0 +1,17 @@
+# **Seg2Change: Adapting Open-Vocabulary Semantic Segmentation Model for Remote Sensing Change Detection**
+## 文章链接：https://arxiv.org/abs/2604.11231
+## 代码链接： https://github.com/yogurts-sy/Seg2Change
+## 背景：
+1. 依赖SAM生成的mask 2. 依赖人工阈值  3. 不同任务需要不同框架
+## 核心思想：
+统一任务框架：先做语义分割，再推导变化
+## 创新点：
+1. 类别无关变化图：首先预测发生变化的地方，输出二值变化特征图，这里强调只要前后类别发生变化，该区域就标为变化，不关心具体类别，然后再利用SegEatrh-OV得到具体类别，最后得到语义变化。
+2. CA-CDD Dataset：对WHU-CD，LEVIR-CD，DSIFN，CLCD，SC-SCD，SECOND 6个类别相关数据集进行重新标注，将原来的有限类别变化扩展为“任何类别变化”的标注。
+3. Category Agnostic Change Head（CACH）
+BDFM：先计算两时相特征差异，生成差异注意力，再利用该注意力反向增强原始特征，从而得到更加稳定的差异表示。（强化真正变化区域）
+EQDA：去Feature里面找真正支持变化的信息，避免光照、季节、阴影的干扰。同时引入滑窗注意力和 Mixture-of-Experts（MoE），使模型能够适应不同数据源、季节和传感器，提高对真实变化的判别能力。
+4. 损失设计：
+① Change Loss：监督Category Change Map。主损失。
+② Upsample Loss：上采样监督
+③ Similarity Loss：未变化区域相似性一致
